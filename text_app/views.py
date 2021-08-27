@@ -15,7 +15,7 @@ def send_text():
     message = client.messages.create(
         body="This is an automated text message",
         from_=os.environ.get('PHONE_NUMBER'),
-        to='+12565999284'
+        to=''
     )
 
     print(message.sid)
