@@ -4,6 +4,12 @@ from twilio.rest import Client
 from twilio.twiml.messaging_response import MessagingResponse
 from dotenv import load_dotenv
 
+from rest_framework import viewsets
+from rest_framework import permissions
+
+from .serializers import ResponseSerializer
+from .models import ResponseModel
+
 load_dotenv()
 
 
@@ -19,6 +25,12 @@ def send_text():
     )
 
     print(message.sid)
+
+
+class ResponseViewSet(viewsets.ModelViewSet):
+    queryset = ResponseModel.objects.all()
+    serializer_class = ResponseSerializer
+    permission_classes = [permissions.AllowAny]
 
 
 if __name__ == "__main__":

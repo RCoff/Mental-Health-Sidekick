@@ -4,6 +4,12 @@ import uuid
 
 # Create your models here.
 class ResponseModel(models.Model):
-    id = models.UUIDField(default=uuid.uuid4())
-    response = models.CharField(max_length=100)
+    RESPONSE_CHOICES = (
+        (1, 1),
+        (2, 2),
+    )
+
+    id = models.UUIDField(default=uuid.uuid4(), primary_key=True)
+    response = models.CharField(max_length=1, choices=RESPONSE_CHOICES)
     datetime = models.DateTimeField(auto_now=True)
+
