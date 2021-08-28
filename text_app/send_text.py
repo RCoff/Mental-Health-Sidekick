@@ -7,13 +7,17 @@ load_dotenv()
 
 
 def send_text(form_link: str,
+              user_first_name: str,
               to_number: str) -> dict:
     account_sid = os.environ.get('ACCOUNT_SID')
     auth_token = os.environ.get('AUTH_TOKEN')
     client = Client(account_sid, auth_token)
 
     message = client.messages.create(
-        body=f"Submit the form here: {form_link}",
+        body=f"Hi, {user_first_name}\n"
+             f"I hope you're having a great day today\n"
+             f"Please tell me how you're feeling:\n"
+             f"{form_link}",
         from_=os.environ.get('PHONE_NUMBER'),
         to=to_number
     )
@@ -30,4 +34,4 @@ def send_text(form_link: str,
 
 
 if __name__ == "__main__":
-    send_text("test", os.environ.get('TO_NUMBER'))
+    send_text("test", "Ridge", os.environ.get('TO_NUMBER'))
