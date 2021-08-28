@@ -22,7 +22,7 @@ class Command(BaseCommand):
 
             if len(active_surveys) == 0:
                 if time_now >= scheduled_time:
-                    url = create_survey()
+                    url = create_survey(user)
 
                     send_text.send_text(url, user.phone_number)
 
