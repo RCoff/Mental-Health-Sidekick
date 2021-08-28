@@ -36,9 +36,12 @@ class ResponseFormView(View):
             else:
                return  # an error
 
-        request.session['survey_id'] = str(survey_id)
-        return render(request, self.template_name, context={'form': form,
-                                                            'survey_id': survey_id})
+        if not ActiveSurveyStore.objects.get(active_survey_id=survey_id).expired_or_completed:
+            request.session['survey_id'] = str(survey_id)
+            return render(request, self.template_name, context={'form': form,
+                                                                'survey_id': survey_id})
+        else:
+            print("No longer valid")
 
     def post(self, request, survey_id=None):
         form = self.form_class(request.POST)
