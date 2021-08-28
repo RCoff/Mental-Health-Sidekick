@@ -5,6 +5,7 @@ import os
 from twilio.rest import Client
 from twilio.twiml.messaging_response import MessagingResponse
 from dotenv import load_dotenv
+import requests
 
 # Django Imports
 from django.shortcuts import render, HttpResponseRedirect, reverse
@@ -36,9 +37,12 @@ class ResponseFormView(View):
             else:
                return  # an error
 
-        if not ActiveSurveyStore.objects.get(active_survey_id=survey_id).expired_or_completed:
+        survey_obj = ActiveSurveyStore.objects.get(active_survey_id=survey_id)
+        if not survey_obj.expired_or_completed:
             request.session['survey_id'] = str(survey_id)
+            user_first_name = survey_obj.user.first_name
             return render(request, self.template_name, context={'form': form,
+                                                                'user_first_name': user_first_name,
                                                                 'survey_id': survey_id})
         else:
             print("No longer valid")
@@ -50,14 +54,18 @@ class ResponseFormView(View):
                 survey_id = request.session['survey_id']
 
             signer = signing.Signer()
-            survey_obj = ActiveSurveyStore.objects.get(active_survey_id=survey_id)
+            if form.cleaned_data['text_response']:
+                text_response = signer.sign_object({'text_response': str(form.cleaned_data['text_response'])})
+            else:
+                text_response = ''
 
+            survey_obj = ActiveSurveyStore.objects.get(active_survey_id=survey_id)
             form_response = ResponseModel(id=survey_obj,
                                           response=form.cleaned_data['response'],
-                                          text_response=signer.sign_object({'text_response': str(form.cleaned_data['text_response'])}))
+                                          text_response=text_response)
             form_response.save()
 
-            survey_obj.expired_or_completed = True
+            survey_obj.completed = True
             survey_obj.save()
 
             return HttpResponseRedirect(reverse('success'))
@@ -67,7 +75,13 @@ class ResponseFormSuccess(View):
     template_name = 'success.html'
 
     def get(self, request):
-        return render(request, self.template_name)
+        dog_image = None
+        rdi = requests.get("https://dog.ceo/api/breeds/image/random").json()
+        if 'status' in rdi:
+            if rdi['status'] == "success":
+                dog_image = rdi['message']
+
+        return render(request, self.template_name, context={'dog_image_url': dog_image})
 
 
 class ResponseViewSet(viewsets.ModelViewSet):
