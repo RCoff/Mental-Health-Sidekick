@@ -30,4 +30,4 @@ def send_text(form_link: str,
 
 
 if __name__ == "__main__":
-    send_text("test", "12565999284")
+    send_text("test", os.environ.get('TO_NUMBER'))
