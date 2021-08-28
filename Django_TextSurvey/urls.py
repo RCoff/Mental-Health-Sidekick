@@ -15,8 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from text_app.views import ResponseFormView, ResponseFormSuccess
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('form/', ResponseFormView.as_view(), name='form'),
+    path('form/success', ResponseFormSuccess.as_view(), name='success'),
     path('api/', include('text_app.urls')),
 ]

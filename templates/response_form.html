@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block head %}
+{% endblock %}
+
+{% block title %}Survey Response{% endblock %}
+
+{% block content %}
+<div class="container m-5">
+    <form action="{% url 'form' %}" method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="{{ form.response.id_for_label }}" class="form-label">How are you today?</label>
+            {{ form.response }}
+        </div>
+        <div class="mb-3">
+            <label for="{{ form.test_response.id_for_label }}" class="form-label">Is there anything you would like to
+                say about today?</label>
+            {{ form.text_response }}
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Submit</button>
+    </form>
+</div>
+{% endblock %}
