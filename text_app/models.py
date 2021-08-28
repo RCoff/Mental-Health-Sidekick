@@ -30,3 +30,5 @@ class UserPhoneNumber(models.Model):
     user = models.OneToOneField(User, primary_key=True, on_delete=models.CASCADE)
     phone_number = models.PositiveBigIntegerField(blank=True, null=True)
     active = models.BooleanField(default=True, choices=((True, True), (False, False),))
+    send_survey_time = models.TimeField()
+    expire_after_hours = models.PositiveSmallIntegerField(default=12)
