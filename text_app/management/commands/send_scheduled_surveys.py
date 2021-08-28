@@ -22,15 +22,20 @@ class Command(BaseCommand):
 
             if len(active_surveys) == 0:
                 if time_now >= scheduled_time:
-                    new_survey = models.ActiveSurveyStore(
-                        user=user.user,
-                        survey_expire_datetime=(datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(
-                            hours=user.expire_after_hours))
-                    )
-                    new_survey.save()
-
-                    survey_id = new_survey.active_survey_id
-                    base_url = os.environ['WEBSITE_HOSTNAME']
-                    url = f"{base_url}form/{survey_id}"
+                    url = create_survey()
 
                     send_text.send_text(url, user.phone_number)
+
+
+def create_survey(user) -> str:
+    new_survey = models.ActiveSurveyStore(
+        user=user.user,
+        survey_expire_datetime=(datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(
+            hours=user.expire_after_hours))
+    )
+    new_survey.save()
+
+    survey_id = new_survey.active_survey_id
+    base_url = os.environ['WEBSITE_HOSTNAME']
+
+    return f"{base_url}form/{survey_id}"
