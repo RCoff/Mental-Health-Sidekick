@@ -17,6 +17,8 @@ class Command(BaseCommand):
             )
             update_survey.save()
 
+        return
+
             # url = create_survey(survey.user)
             #
             # send_text.send_text(url, survey.user.userphonenumber.phone_number)

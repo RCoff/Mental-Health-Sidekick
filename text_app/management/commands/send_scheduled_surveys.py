@@ -26,6 +26,8 @@ class Command(BaseCommand):
 
                     send_text.send_text(url, user.phone_number)
 
+        return
+
 
 def create_survey(user) -> str:
     new_survey = models.ActiveSurveyStore(
