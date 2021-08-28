@@ -20,6 +20,7 @@ from text_app.views import ResponseFormView, ResponseFormSuccess
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('form/', ResponseFormView.as_view(), name='form'),
+    path('form/<uuid:survey_id>/', ResponseFormView.as_view(), name='form-uuid'),
     path('form/success', ResponseFormSuccess.as_view(), name='success'),
     path('api/', include('text_app.urls')),
 ]
