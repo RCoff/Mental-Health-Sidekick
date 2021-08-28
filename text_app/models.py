@@ -10,6 +10,13 @@ class ActiveSurveyStore(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     survey_expire_datetime = models.DateTimeField(auto_now=False, blank=False, null=False)
     expired_or_completed = models.BooleanField(default=False, choices=((True, True), (False, False),))
+    expired = models.BooleanField(default=False, choices=((True, True), (False, False),))
+    completed = models.BooleanField(default=False, choices=((True, True), (False, False),))
+
+    def save(self, *args, **kwargs):
+        if self.expired is True or self.completed is True:
+            self.expired_or_completed = True
+        super(ActiveSurveyStore, self).save(*args, **kwargs)
 
 
 class ResponseModel(models.Model):
@@ -23,7 +30,7 @@ class ResponseModel(models.Model):
     # id = models.UUIDField(default=uuid.uuid4(), primary_key=True)
     response = models.SmallIntegerField(choices=RESPONSE_CHOICES)
     text_response = models.TextField(null=True, blank=True)
-    datetime = models.DateTimeField(auto_now=True)
+    datetime = models.DateTimeField(auto_now=True, editable=False)
 
 
 class UserPhoneNumber(models.Model):
