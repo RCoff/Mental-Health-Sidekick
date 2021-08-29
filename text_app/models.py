@@ -57,7 +57,7 @@ class UserPhoneNumber(models.Model):
     expire_after_hours = models.PositiveSmallIntegerField(default=12)
     survey_interval_hours = models.PositiveSmallIntegerField(default=24)
     last_survey_sent_datetime = models.DateTimeField(null=True, blank=True)
-    next_survey_datetime = models.DateTimeField(null=True, blank=True)
+    next_survey_datetime = models.DateTimeField()
 
     def save(self, *args, **kwargs):
         if self.last_survey_sent_datetime is not None:
