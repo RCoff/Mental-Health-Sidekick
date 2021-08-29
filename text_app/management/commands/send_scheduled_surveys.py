@@ -3,6 +3,7 @@ import datetime
 import uuid
 
 from django.core.management.base import BaseCommand, CommandError
+from django.utils import timezone as dtz
 from dotenv import load_dotenv
 
 from text_app import models, send_text
@@ -19,6 +20,8 @@ class Command(BaseCommand):
 
         for user in models.UserPhoneNumber.objects.all().filter(active=True):
             active_surveys = user.user.activesurveystore_set.model.objects.filter(expired_or_completed=False)
+            print(user.next_survey_datetime)
+            print(datetime.datetime.now(datetime.timezone.utc))
 
             if len(active_surveys) == 0:
                 survey_obj = create_survey(user)
@@ -30,8 +33,11 @@ class Command(BaseCommand):
 
             elif len(active_surveys) == 1:
                 if active_surveys[0].sent is False:
-                    survey_obj = active_surveys[0]
-                    survey_id = survey_obj.active_survey_id
+                    if user.next_survey_datetime <= datetime.datetime.now(datetime.timezone.utc):
+                        survey_obj = active_surveys[0]
+                        survey_id = survey_obj.active_survey_id
+                    else:
+                        continue
                 else:
                     continue
             else:
@@ -49,6 +55,9 @@ class Command(BaseCommand):
                 survey_obj.save()
 
                 survey_obj.user.userphonenumber.last_survey_sent_datetime = datetime.datetime.now(datetime.timezone.utc)
+                survey_obj.user.userphonenumber.next_survey_datetime = dtz.make_aware(datetime.datetime.combine(
+                    datetime.datetime.now(datetime.timezone.utc).date() + datetime.timedelta(days=1),
+                    survey_obj.user.userphonenumber.send_survey_time).time)
                 survey_obj.user.userphonenumber.save()
 
         return
