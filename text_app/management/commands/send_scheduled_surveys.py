@@ -2,6 +2,7 @@ import os
 import datetime
 import uuid
 
+import pytz
 from django.core.management.base import BaseCommand, CommandError
 from django.utils import timezone as dtz
 from dotenv import load_dotenv
@@ -57,7 +58,7 @@ class Command(BaseCommand):
                 survey_obj.user.userphonenumber.last_survey_sent_datetime = datetime.datetime.now(datetime.timezone.utc)
                 survey_obj.user.userphonenumber.next_survey_datetime = dtz.make_aware(datetime.datetime.combine(
                     datetime.datetime.now(datetime.timezone.utc).date() + datetime.timedelta(days=1),
-                    survey_obj.user.userphonenumber.send_survey_time).time)
+                    survey_obj.user.userphonenumber.send_survey_time), timezone=pytz.timezone('UTC'))
                 survey_obj.user.userphonenumber.save()
 
         return

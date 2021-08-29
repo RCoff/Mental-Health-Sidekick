@@ -3,6 +3,7 @@ import datetime
 import os
 
 # 3rd Party Imports
+import pytz
 from twilio.rest import Client
 from twilio.twiml.messaging_response import MessagingResponse
 from dotenv import load_dotenv
@@ -72,11 +73,11 @@ class ResponseFormView(View):
             survey_obj.completed = True
             survey_obj.save()
 
-            if survey_obj.user.userphonenumber.next_survey_datetime:
-                survey_obj.user.userphonenumber.next_survey_datetime = dtz.make_aware(datetime.datetime.combine(
-                    datetime.datetime.now(datetime.timezone.utc).date() + datetime.timedelta(days=1),
-                    survey_obj.user.userphonenumber.send_survey_time))
-                survey_obj.user.userphonenumber.save()
+            # if survey_obj.user.userphonenumber.next_survey_datetime:
+            #     survey_obj.user.userphonenumber.next_survey_datetime = dtz.make_aware(datetime.datetime.combine(
+            #         datetime.datetime.now(datetime.timezone.utc).date() + datetime.timedelta(days=1),
+            #         survey_obj.user.userphonenumber.send_survey_time), timezone=pytz.timezone('UTC'))
+            #     survey_obj.user.userphonenumber.save()
 
             return HttpResponseRedirect(reverse('success'))
         else:
