@@ -1,4 +1,5 @@
 # Standard Imports
+import datetime
 import os
 
 # 3rd Party Imports
@@ -35,7 +36,8 @@ class ResponseFormView(View):
             if 'id' in request.GET:
                 survey_id = request.GET['id']
             else:
-               return  # an error
+                # TODO: Return An error
+                return  # an error
 
         survey_obj = ActiveSurveyStore.objects.get(active_survey_id=survey_id)
         if not survey_obj.expired_or_completed:
@@ -49,6 +51,7 @@ class ResponseFormView(View):
 
     def post(self, request, survey_id=None):
         form = self.form_class(request.POST)
+
         if form.is_valid():
             if survey_id is None:
                 survey_id = request.session['survey_id']
@@ -68,7 +71,16 @@ class ResponseFormView(View):
             survey_obj.completed = True
             survey_obj.save()
 
+            if survey_obj.user.userphonenumber.next_survey_datetime:
+                survey_obj.user.userphonenumber.next_survey_datetime = datetime.datetime.combine(
+                    survey_obj.user.userphonenumber.next_survey_datetime.date() + datetime.timedelta(days=1),
+                    survey_obj.user.userphonenumber.send_survey_time)
+                survey_obj.user.userphonenumber.save()
+
             return HttpResponseRedirect(reverse('success'))
+        else:
+            # TODO: Return an error
+            return
 
 
 class ResponseFormSuccess(View):
