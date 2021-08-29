@@ -59,9 +59,9 @@ class UserPhoneNumber(models.Model):
     last_survey_sent_datetime = models.DateTimeField(null=True, blank=True)
     next_survey_datetime = models.DateTimeField()
 
-    def save(self, *args, **kwargs):
-        if self.last_survey_sent_datetime is not None:
-            self.next_survey_datetime = self.last_survey_sent_datetime + datetime.timedelta(
-                hours=self.survey_interval_hours)
-        super(UserPhoneNumber, self).save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     if self.last_survey_sent_datetime is not None:
+    #         self.next_survey_datetime = self.last_survey_sent_datetime + datetime.timedelta(
+    #             hours=self.survey_interval_hours)
+    #     super(UserPhoneNumber, self).save(*args, **kwargs)
 
