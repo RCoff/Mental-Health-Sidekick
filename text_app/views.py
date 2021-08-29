@@ -12,6 +12,7 @@ import requests
 from django.shortcuts import render, HttpResponseRedirect, reverse
 from django.views.generic import View
 from django.core import signing
+from django.utils import timezone as dtz
 from rest_framework import viewsets
 from rest_framework import permissions
 
@@ -72,9 +73,9 @@ class ResponseFormView(View):
             survey_obj.save()
 
             if survey_obj.user.userphonenumber.next_survey_datetime:
-                survey_obj.user.userphonenumber.next_survey_datetime = datetime.datetime.combine(
-                    survey_obj.user.userphonenumber.next_survey_datetime.date() + datetime.timedelta(days=1),
-                    survey_obj.user.userphonenumber.send_survey_time)
+                survey_obj.user.userphonenumber.next_survey_datetime = dtz.make_aware(datetime.datetime.combine(
+                    datetime.datetime.now(datetime.timezone.utc).date() + datetime.timedelta(days=1),
+                    survey_obj.user.userphonenumber.send_survey_time))
                 survey_obj.user.userphonenumber.save()
 
             return HttpResponseRedirect(reverse('success'))
