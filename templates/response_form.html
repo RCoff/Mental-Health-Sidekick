@@ -6,24 +6,73 @@
 {% block title %}Survey Response{% endblock %}
 
 {% block content %}
-<div class="container-sm mt-5">
-    <div class="mb-4">
-        <h1 class="display-5">Hi, {{ user_first_name }}</h1>
+    <div class="container-sm mt-5">
+        <div class="mb-5">
+            <h1 class="display-5">Hi, {{ user_first_name }}</h1>
+        </div>
+        <form action="{% url 'form-uuid' survey_id %}" method="post">
+            {% csrf_token %}
+            <div class="mb-5">
+                <label for="{{ form.mood_response.id_for_label }}" class="form-label">How is your mood today?</label>
+                {{ form.mood_response }}
+                <div class="row">
+                    <div class="col-1 text-start">
+                        -4
+                    </div>
+                    <div class="col-3 text-center">
+                        Elevated
+                    </div>
+                    <div class="col-4 text-center">
+                        0
+                    </div>
+                    <div class="col-3 text-center">
+                        Depressed
+                    </div>
+                    <div class="col-1 text-end">
+                        4
+                    </div>
+                </div>
+{#                <datalist id="mood-steps">#}
+{#                    <option>-4</option>#}
+{#                    <option>-3</option>#}
+{#                    <option>-2</option>#}
+{#                    <option>-1</option>#}
+{#                    <option>0</option>#}
+{#                    <option>1</option>#}
+{#                    <option>2</option>#}
+{#                    <option>3</option>#}
+{#                    <option>4</option>#}
+{#                </datalist>#}
+            </div>
+            <div class="row">
+                <div class="col-6 mb-4">
+                    <label for="{{ form.hours_slept.id_for_label }}" class="form-label">How many hours of sleep did you
+                        get last night?</label>
+                    {{ form.hours_slept }}
+                </div>
+                <div class="col-6 mb-4">
+                    <label for="{{ form.daily_weight.id_for_label }}" class="form-label">What was your weight
+                        today?</label>
+                    {{ form.daily_weight }}
+                </div>
+            </div>
+            <div class="mb-4">
+                <label for="{{ form.daily_symptoms.id_for_label }}" class="form-label">What symptoms did you experience
+                    today?</label>
+                {{ form.daily_symptoms }}
+            </div>
+            <div class="mb-4">
+                <label for="{{ form.test_response.id_for_label }}" class="form-label">Is there anything you would like
+                    to
+                    say about today?</label>
+                {{ form.text_response }}
+                <div class="form-text">
+                    Your response is encrypted, no one can see what you enter
+                </div>
+            </div>
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary btn-block">Submit</button>
+            </div>
+        </form>
     </div>
-    <form action="{% url 'form-uuid' survey_id %}" method="post">
-        {% csrf_token %}
-        <div class="mb-4">
-            <label for="{{ form.response.id_for_label }}" class="form-label">How are you today?</label>
-            {{ form.response }}
-        </div>
-        <div class="mb-4">
-            <label for="{{ form.test_response.id_for_label }}" class="form-label">Is there anything you would like to
-                say about today?</label>
-            {{ form.text_response }}
-        </div>
-        <div class="d-grid gap-2">
-            <button type="submit" class="btn btn-primary btn-block">Submit</button>
-        </div>
-    </form>
-</div>
 {% endblock %}
