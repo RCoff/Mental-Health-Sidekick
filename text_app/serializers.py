@@ -5,4 +5,4 @@ from .models import ResponseModel
 class ResponseSerializer(serializers.ModelSerializer):
     class Meta:
         model = ResponseModel
-        fields = ['id', 'response']
+        fields = ['id', 'mood_response']

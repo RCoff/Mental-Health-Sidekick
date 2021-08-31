@@ -2,6 +2,7 @@ import datetime
 
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 import uuid
 
@@ -24,17 +25,43 @@ class ActiveSurveyStore(models.Model):
         super(ActiveSurveyStore, self).save(*args, **kwargs)
 
 
+class Disorder(models.Model):
+    disorder = models.CharField(max_length=100, primary_key=True)
+    disorder_shortname = models.CharField(max_length=10, blank=True, null=True)
+    date_added = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.disorder_shortname
+
+
+class DailySymptoms(models.Model):
+    symptom = models.CharField(max_length=50, primary_key=True)
+    disorder = models.ManyToManyField(Disorder)
+    date_added = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.symptom.title()
+
+
 class ResponseModel(models.Model):
     RESPONSE_CHOICES = (
+        (-4, -4),
+        (-3, -3),
+        (-2, -2),
+        (-1, -1),
         (1, 1),
         (2, 2),
         (3, 3),
+        (4, 4)
     )
 
     id = models.OneToOneField(ActiveSurveyStore, on_delete=models.CASCADE, primary_key=True)
-    response = models.SmallIntegerField(choices=RESPONSE_CHOICES)
+    mood_response = models.SmallIntegerField(choices=RESPONSE_CHOICES)
+    hours_slept = models.PositiveSmallIntegerField(blank=True, null=True, validators=[MinValueValidator(0), MaxValueValidator(24)])
+    daily_weight = models.PositiveSmallIntegerField(blank=True, null=True, validators=[MinValueValidator(0)])
+    daily_symptoms = models.ManyToManyField(DailySymptoms)
     text_response = models.TextField(null=True, blank=True)
-    datetime = models.DateTimeField(auto_now=True, editable=False)
+    datetime = models.DateTimeField(auto_now_add=True, editable=False)
 
 
 # TODO: Why doesn't this work?
