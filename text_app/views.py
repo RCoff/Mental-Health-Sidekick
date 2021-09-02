@@ -20,6 +20,7 @@ from rest_framework import permissions
 # Local Imports
 from .serializers import ResponseSerializer
 from .models import ResponseModel, ActiveSurveyStore
+
 from .forms import ResponseForm
 from .send_text import send_text
 
@@ -66,7 +67,7 @@ class ResponseFormView(View):
 
             survey_obj = ActiveSurveyStore.objects.get(active_survey_id=survey_id)
             form_response = ResponseModel(id=survey_obj,
-                                          response=form.cleaned_data['response'],
+                                          response=form.cleaned_data['mood_response'],
                                           text_response=text_response)
             form_response.save()
 
