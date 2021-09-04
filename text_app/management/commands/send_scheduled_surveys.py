@@ -21,8 +21,10 @@ class Command(BaseCommand):
 
         for user in models.UserPhoneNumber.objects.all().filter(active=True):
             active_surveys = user.user.activesurveystore_set.model.objects.filter(expired_or_completed=False)
-            print(user.next_survey_datetime)
-            print(datetime.datetime.now(datetime.timezone.utc))
+            print(user.user.first_name)
+            print(len(active_surveys))
+            print(f"Next Survey At: {user.next_survey_datetime}")
+            print(f"Current time: {datetime.datetime.now(datetime.timezone.utc)}")
 
             if len(active_surveys) == 0:
                 survey_obj = create_survey(user)
