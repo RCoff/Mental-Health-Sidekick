@@ -20,7 +20,7 @@ class Command(BaseCommand):
         base_url = os.environ['WEBSITE_HOSTNAME']
 
         for user in models.UserPhoneNumber.objects.all().filter(active=True):
-            active_surveys = user.user.activesurveystore_set.model.objects.filter(expired_or_completed=False)
+            active_surveys = user.user.activesurveystore_set.model.objects.filter(expired_or_completed=False, user=user.user)
             print(user.user.first_name)
             print(len(active_surveys))
             print(f"Next Survey At: {user.next_survey_datetime}")

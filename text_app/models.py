@@ -11,7 +11,7 @@ import uuid
 class ActiveSurveyStore(models.Model):
     BOOLEAN_CHOICES = ((True, True), (False, False),)
 
-    active_survey_id = models.UUIDField(primary_key=True, default=uuid.uuid4())
+    active_survey_id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     survey_expire_datetime = models.DateTimeField(auto_now=False, blank=False, null=False)
     sent = models.BooleanField(default=False, choices=BOOLEAN_CHOICES)
