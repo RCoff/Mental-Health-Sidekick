@@ -42,7 +42,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterField(
             model_name='responsemodel',
-            name='mood_response',
+            name='response',
             field=models.SmallIntegerField(choices=[(-4, -4), (-3, -3), (-2, -2), (-1, -1), (1, 1), (2, 2), (3, 3), (4, 4)]),
         ),
         migrations.AddField(
