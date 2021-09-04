@@ -49,6 +49,7 @@ class ResponseModel(models.Model):
         (-3, -3),
         (-2, -2),
         (-1, -1),
+        (0, 0),
         (1, 1),
         (2, 2),
         (3, 3),
@@ -61,7 +62,7 @@ class ResponseModel(models.Model):
     daily_weight = models.PositiveSmallIntegerField(blank=True, null=True, validators=[MinValueValidator(0)])
     daily_symptoms = models.ManyToManyField(DailySymptoms)
     text_response = models.TextField(null=True, blank=True)
-    datetime = models.DateTimeField(auto_now_add=True, editable=False)
+    datetime = models.DateTimeField(auto_now_add=True)
 
 
 # TODO: Why doesn't this work?
