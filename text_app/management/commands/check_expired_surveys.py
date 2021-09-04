@@ -10,7 +10,7 @@ class Command(BaseCommand):
     help = 'Check surveys and mark if expired'
 
     def handle(self, *args, **options):
-        for survey in models.ActiveSurveyStore.objects.all().filter(expired_or_completed=False,
+        for survey in models.ActiveSurveyStore.objects.all().filter(expired=False,
                                                                     survey_expire_datetime__lte=datetime.datetime.now(datetime.timezone.utc)):
             update_survey = survey(
                 expired=True
