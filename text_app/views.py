@@ -3,14 +3,12 @@ import datetime
 import os
 
 # 3rd Party Imports
-import pytz
-from twilio.rest import Client
-from twilio.twiml.messaging_response import MessagingResponse
 from dotenv import load_dotenv
 import requests
+import logging
 
 # Django Imports
-from django.shortcuts import render, HttpResponseRedirect, reverse
+from django.shortcuts import render, HttpResponseRedirect, reverse, HttpResponse
 from django.views.generic import View
 from django.core import signing
 from django.utils import timezone as dtz
@@ -23,7 +21,6 @@ from .models import ResponseModel, ActiveSurveyStore
 
 from .forms import ResponseForm
 from .models import ResponseModel
-from .send_text import send_text
 
 load_dotenv()
 
@@ -34,8 +31,19 @@ class ResponseFormView(View):
     form_class = ResponseForm
 
     def get(self, request, survey_id=None):
+        if not survey_id:
+            if 'id' in request.GET:
+                logging.debug('Survey ID not found in URL. Getting survey ID from request')
+                survey_id = request.GET['id']
+            else:
+                # TODO: Return An error
+                logging.error('Survey ID not found in URL or in request')
+                return HttpResponse("Survey ID not found in URL")
+
         try:
+            logging.debug('Attempting to get survey response', extra={'survey_id': survey_id})
             submitted_form = ResponseModel.objects.get(id=survey_id)
+            logging.debug('Survey found in batabase', extra={'survey_id': survey_id})
             signer = signing.Signer()
             decrypted_text_response = signer.unsign_object(submitted_form.text_response).get('text_response')
             form = self.form_class({'mood_response': submitted_form.mood_response,
@@ -44,14 +52,8 @@ class ResponseFormView(View):
                                     'daily_symptoms': submitted_form.daily_symptoms.all(),
                                     'text_response': decrypted_text_response})
         except ResponseModel.DoesNotExist:
+            logging.debug('Survey response not found, using empty form', survey_id={'survey_id': survey_id})
             form = self.form_class()
-
-        if not survey_id:
-            if 'id' in request.GET:
-                survey_id = request.GET['id']
-            else:
-                # TODO: Return An error
-                return  # an error
 
         survey_obj = ActiveSurveyStore.objects.get(active_survey_id=survey_id)
         request.session['survey_id'] = str(survey_id)
