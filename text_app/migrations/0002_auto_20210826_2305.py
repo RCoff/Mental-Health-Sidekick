@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterField(
             model_name='responsemodel',
-            name='mood_response',
+            name='response',
             field=models.CharField(choices=[(1, 1), (2, 2)], max_length=1),
         ),
     ]
