@@ -54,10 +54,9 @@ class ResponseFormView(View):
                 signer = signing.Signer()
                 decrypted_text_response = signer.unsign_object(submitted_form.text_response)
                 if decrypted_text_response:
-                    decrypted_text_response.get('text_response')
-                    populated_survey_form.update({'text_response': decrypted_text_response})
+                    populated_survey_form.update({'text_response': decrypted_text_response.get('text_response', '')})
 
-            form = self.form_class()
+            form = self.form_class(populated_survey_form)
         except ResponseModel.DoesNotExist:
             logging.debug('Survey response not found, using empty form', survey_id={'survey_id': survey_id})
             form = self.form_class()
