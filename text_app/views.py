@@ -44,13 +44,20 @@ class ResponseFormView(View):
             logging.debug('Attempting to get survey response', extra={'survey_id': survey_id})
             submitted_form = ResponseModel.objects.get(id=survey_id)
             logging.debug('Survey found in batabase', extra={'survey_id': survey_id})
-            signer = signing.Signer()
-            decrypted_text_response = signer.unsign_object(submitted_form.text_response).get('text_response')
-            form = self.form_class({'mood_response': submitted_form.mood_response,
-                                    'hours_slept': submitted_form.hours_slept,
-                                    'daily_weight': submitted_form.daily_weight,
-                                    'daily_symptoms': submitted_form.daily_symptoms.all(),
-                                    'text_response': decrypted_text_response})
+
+            populated_survey_form = {'mood_response': submitted_form.mood_response,
+                                     'hours_slept': submitted_form.hours_slept,
+                                     'daily_weight': submitted_form.daily_weight,
+                                     'daily_symptoms': submitted_form.daily_symptoms.all()}
+
+            if submitted_form.text_response:
+                signer = signing.Signer()
+                decrypted_text_response = signer.unsign_object(submitted_form.text_response)
+                if decrypted_text_response:
+                    decrypted_text_response.get('text_response')
+                    populated_survey_form.update({'text_response': decrypted_text_response})
+
+            form = self.form_class()
         except ResponseModel.DoesNotExist:
             logging.debug('Survey response not found, using empty form', survey_id={'survey_id': survey_id})
             form = self.form_class()
