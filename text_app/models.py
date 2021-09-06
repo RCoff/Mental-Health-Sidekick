@@ -15,14 +15,9 @@ class ActiveSurveyStore(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     survey_expire_datetime = models.DateTimeField(auto_now=False, blank=False, null=False)
     sent = models.BooleanField(default=False, choices=BOOLEAN_CHOICES)
-    expired_or_completed = models.BooleanField(default=False, choices=BOOLEAN_CHOICES)
+    sent_datetime = models.DateTimeField(blank=True, null=True)
     expired = models.BooleanField(default=False, choices=BOOLEAN_CHOICES)
     completed = models.BooleanField(default=False, choices=BOOLEAN_CHOICES)
-
-    def save(self, *args, **kwargs):
-        if self.expired is True or self.completed is True:
-            self.expired_or_completed = True
-        super(ActiveSurveyStore, self).save(*args, **kwargs)
 
 
 class Disorder(models.Model):
