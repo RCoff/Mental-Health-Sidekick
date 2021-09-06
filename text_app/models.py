@@ -62,8 +62,8 @@ class ResponseModel(models.Model):
     daily_weight = models.PositiveSmallIntegerField(blank=True, null=True, validators=[MinValueValidator(0)])
     daily_symptoms = models.ManyToManyField(DailySymptoms)
     text_response = models.TextField(null=True, blank=True)
-    datetime = models.DateTimeField(auto_now_add=True)
-
+    created_datetime = models.DateTimeField(auto_now_add=True)
+    modified_datetime = models.DateTimeField(auto_now=True)
 
 # TODO: Why doesn't this work?
 # def default_next_survey(send_survey_time):
