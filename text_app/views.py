@@ -8,10 +8,12 @@ import requests
 import logging
 
 # Django Imports
+from django.core.exceptions import BadRequest
+from django.http import Http404
 from django.shortcuts import render, HttpResponseRedirect, reverse, HttpResponse
 from django.views.generic import View
 from django.core import signing
-from django.utils import timezone as dtz
+
 from rest_framework import viewsets
 from rest_framework import permissions
 
@@ -38,12 +40,18 @@ class ResponseFormView(View):
             else:
                 # TODO: Return An error
                 logging.error('Survey ID not found in URL or in request')
-                return HttpResponse("Survey ID not found in URL")
+                raise BadRequest("Survey ID not found in URL")
+
+        try:
+            logging.debug('Getting survey object', extra={'survey_id': survey_id})
+            survey_obj = ActiveSurveyStore.objects.get(active_survey_id=survey_id)
+        except ActiveSurveyStore.DoesNotExist:
+            raise Http404("Survey does not exist")
 
         try:
             logging.debug('Attempting to get survey response', extra={'survey_id': survey_id})
             submitted_form = ResponseModel.objects.get(id=survey_id)
-            logging.debug('Survey found in batabase', extra={'survey_id': survey_id})
+            logging.debug('Survey found in database', extra={'survey_id': survey_id})
 
             populated_survey_form = {'mood_response': submitted_form.mood_response,
                                      'hours_slept': submitted_form.hours_slept,
@@ -52,16 +60,20 @@ class ResponseFormView(View):
 
             if submitted_form.text_response:
                 signer = signing.Signer()
-                decrypted_text_response = signer.unsign_object(submitted_form.text_response)
-                if decrypted_text_response:
-                    populated_survey_form.update({'text_response': decrypted_text_response.get('text_response', '')})
+                try:
+                    decrypted_text_response = signer.unsign_object(submitted_form.text_response)
+                    if decrypted_text_response:
+                        populated_survey_form.update({'text_response': decrypted_text_response.get('text_response', '')})
+                except signing.BadSignature:
+                    logging.exception(f"Not able to decode the text response for survey: {survey_id}",
+                                      survey_id={'survey_id': survey_id})
+                    raise
 
             form = self.form_class(populated_survey_form)
         except ResponseModel.DoesNotExist:
             logging.debug('Survey response not found, using empty form', survey_id={'survey_id': survey_id})
             form = self.form_class()
 
-        survey_obj = ActiveSurveyStore.objects.get(active_survey_id=survey_id)
         request.session['survey_id'] = str(survey_id)
         user_first_name = survey_obj.user.first_name
         return render(request, self.template_name, context={'form': form,
@@ -91,14 +103,14 @@ class ResponseFormView(View):
                           'text_response': text_response})
             for symptom in form.cleaned_data['daily_symptoms']:
                 form_response.daily_symptoms.add(symptom)
-            form_response.save()
 
+            form_response.save()
             survey_obj.completed = True
             survey_obj.save()
 
             return HttpResponseRedirect(reverse('success'))
         else:
-            # TODO: Return an error
+            # TODO: Handle invalid form
             return
 
 
