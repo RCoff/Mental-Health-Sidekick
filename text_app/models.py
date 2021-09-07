@@ -19,6 +19,12 @@ class ActiveSurveyStore(models.Model):
     expired = models.BooleanField(default=False, choices=BOOLEAN_CHOICES)
     completed = models.BooleanField(default=False, choices=BOOLEAN_CHOICES)
 
+    def __str__(self):
+        return f"Survey - {self.user.username} - {self.active_survey_id}"
+
+    class Meta:
+        ordering = ['sent_datetime']
+
 
 class Disorder(models.Model):
     disorder = models.CharField(max_length=100, primary_key=True)
@@ -60,16 +66,11 @@ class ResponseModel(models.Model):
     created_datetime = models.DateTimeField(auto_now_add=True)
     modified_datetime = models.DateTimeField(auto_now=True)
 
-# TODO: Why doesn't this work?
-# def default_next_survey(send_survey_time):
-#     next_survey_datetime = datetime.datetime.combine(
-#         datetime.datetime.now(datetime.timezone.utc).date(),
-#         send_survey_time)
-#
-#     if datetime.datetime.now(datetime.timezone.utc).time() > send_survey_time:
-#         next_survey_datetime = (next_survey_datetime + datetime.timedelta(days=1))
-#
-#     return next_survey_datetime
+    def __str__(self):
+        return f"Response - {self.id.user.username} - {self.id_id}"
+
+    class Meta:
+        ordering = ['created_datetime']
 
 
 class UserPhoneNumber(models.Model):
@@ -82,9 +83,5 @@ class UserPhoneNumber(models.Model):
     last_survey_sent_datetime = models.DateTimeField(null=True, blank=True)
     next_survey_datetime = models.DateTimeField()
 
-    # def save(self, *args, **kwargs):
-    #     if self.last_survey_sent_datetime is not None:
-    #         self.next_survey_datetime = self.last_survey_sent_datetime + datetime.timedelta(
-    #             hours=self.survey_interval_hours)
-    #     super(UserPhoneNumber, self).save(*args, **kwargs)
-
+    def __str__(self):
+        return f"User - {self.user.id} - {self.user.username}"
