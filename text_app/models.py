@@ -55,7 +55,7 @@ class ResponseModel(models.Model):
     mood_response = models.SmallIntegerField(choices=RESPONSE_CHOICES)
     hours_slept = models.PositiveSmallIntegerField(blank=True, null=True, validators=[MinValueValidator(0), MaxValueValidator(24)])
     daily_weight = models.PositiveSmallIntegerField(blank=True, null=True, validators=[MinValueValidator(0)])
-    daily_symptoms = models.ManyToManyField(DailySymptoms)
+    daily_symptoms = models.ManyToManyField(DailySymptoms, blank=True)
     text_response = models.TextField(null=True, blank=True)
     created_datetime = models.DateTimeField(auto_now_add=True)
     modified_datetime = models.DateTimeField(auto_now=True)
