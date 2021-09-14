@@ -23,7 +23,7 @@ class ActiveSurveyStore(models.Model):
         return f"Survey - {self.user.username} - {self.active_survey_id}"
 
     class Meta:
-        ordering = ['sent_datetime']
+        ordering = ['-sent_datetime']
 
 
 class Disorder(models.Model):
@@ -70,7 +70,7 @@ class ResponseModel(models.Model):
         return f"Response - {self.id.user.username} - {self.id_id}"
 
     class Meta:
-        ordering = ['created_datetime']
+        ordering = ['-created_datetime']
 
 
 class UserPhoneNumber(models.Model):
