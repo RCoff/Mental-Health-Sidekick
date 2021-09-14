@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 from text_app import models, send_text
 
 load_dotenv()
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('backend')
 
 
 # TODO: Use celery or APscheduler for scheduling?

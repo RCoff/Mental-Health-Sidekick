@@ -6,7 +6,7 @@ import logging
 
 from .send_scheduled_surveys import create_survey
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('backend')
 
 
 class Command(BaseCommand):
