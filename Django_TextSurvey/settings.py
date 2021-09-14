@@ -150,6 +150,9 @@ LOGGING = {
         },
         'simple': {
             'format': '%(levelname)s %(message)s'
+        },
+        'json': {
+            '()': 'json_log_formatter.JSONFormatter',
         }
     },
     'handlers': {
@@ -161,12 +164,30 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
             'formatter': 'verbose'
+        },
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'log.log'
+        },
+        'json': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'json',
         }
     },
     'loggers': {
-        'testlogger': {
+        'backend': {
+            'handlers': ['json'],
+            'level': 'DEBUG',
+            'formatter': 'json',
+            'propagate': False,
+        },
+        'django': {
             'handlers': ['console'],
             'level': 'INFO',
+            'formatter': 'simple',
+            'propagate': False,
         }
     }
 }
