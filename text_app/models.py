@@ -18,12 +18,13 @@ class ActiveSurveyStore(models.Model):
     sent_datetime = models.DateTimeField(blank=True, null=True)
     expired = models.BooleanField(default=False, choices=BOOLEAN_CHOICES)
     completed = models.BooleanField(default=False, choices=BOOLEAN_CHOICES)
+    created_datetime = models.DateTimeField(auto_now_add=True, null=True)
 
     def __str__(self):
         return f"Survey - {self.user.username} - {self.active_survey_id}"
 
     class Meta:
-        ordering = ['-sent_datetime']
+        ordering = ['-created_datetime']
 
 
 class Disorder(models.Model):
