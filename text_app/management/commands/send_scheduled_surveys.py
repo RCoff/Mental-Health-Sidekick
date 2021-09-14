@@ -56,6 +56,7 @@ class Command(BaseCommand):
             response = send_text.send_text(body, user.phone_number)
             if response.get('sent'):
                 survey_obj.sent = True
+                survey_obj.sent_datetime = datetime.datetime.now(datetime.timezone.utc)
                 survey_obj.save()
 
                 survey_obj.user.userphonenumber.last_survey_sent_datetime = datetime.datetime.now(datetime.timezone.utc)
