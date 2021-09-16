@@ -6,3 +6,4 @@ staticfiles/
 .env
 .dbeaver
 .project
+*.log
