@@ -96,7 +96,7 @@ def create_survey(user):
     new_survey = models.ActiveSurveyStore(
         user=user.user,
         survey_expire_datetime=(datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(
-            hours=user.expire_after_hours))
+            hours=int(user.expire_after_hours)))
     )
     new_survey.save()
 
