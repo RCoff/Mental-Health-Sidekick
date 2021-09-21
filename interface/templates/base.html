@@ -15,7 +15,7 @@
         <a class="navbar-brand" href="#">Home</a>
         <form class="d-flex">
             {% if user.is_authenticated %}
-                <a class="btn btn-outline-primary" style="width: 90px;" role="button" href="#">Me</a>
+                <a class="btn btn-outline-primary" style="width: 90px;" role="button" href="{% url 'home' %}">Me</a>
             {% else %}
                 <a class="btn btn-outline-primary" style="width: 90px;" role="button" href="#">Login</a>
             {% endif %}
