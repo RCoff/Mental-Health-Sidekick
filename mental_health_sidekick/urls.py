@@ -18,6 +18,7 @@ from django.urls import path, include
 from text_app.views import ResponseFormView, ResponseFormSuccess
 
 urlpatterns = [
+    path('', include('interface.urls')),
     path('admin/', admin.site.urls),
     path('form/', ResponseFormView.as_view(), name='form'),
     path('form/<uuid:survey_id>/', ResponseFormView.as_view(), name='form-uuid'),
