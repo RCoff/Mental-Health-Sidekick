@@ -118,13 +118,14 @@ class ResponseFormSuccess(View):
     template_name = 'success.html'
 
     def get(self, request):
-        dog_image = None
-        rdi = requests.get("https://dog.ceo/api/breeds/image/random").json()
-        if 'status' in rdi:
-            if rdi['status'] == "success":
-                dog_image = rdi['message']
+        image_url = None
+        # rdi = requests.get("https://dog.ceo/api/breeds/image/random").json()
+        rdi = requests.get("https://randomfox.ca/floof/").json()
+        if rdi.get('image'):
+            # image_url = rdi['message']
+            image_url = rdi['image']
 
-        return render(request, self.template_name, context={'dog_image_url': dog_image})
+        return render(request, self.template_name, context={'dog_image_url': image_url})
 
 
 class ResponseViewSet(viewsets.ModelViewSet):
