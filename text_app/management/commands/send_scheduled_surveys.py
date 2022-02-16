@@ -1,11 +1,10 @@
 import os
-import datetime
-import uuid
 import logging
+import datetime
 
 import pytz
-from django.core.management.base import BaseCommand, CommandError
-from django.utils import timezone as dtz
+from django.core.management.base import BaseCommand
+from django.utils import timezone
 from dotenv import load_dotenv
 
 from text_app import models, send_text
@@ -20,7 +19,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         base_url = os.environ['WEBSITE_HOSTNAME']
-        start_time = datetime.datetime.now(datetime.timezone.utc)
+        start_time = timezone.now()
         logger.debug("Sending surveys texts", extra={'start_time': start_time})
 
         for user in models.UserPhoneNumber.objects.all().filter(active=True):
@@ -31,21 +30,21 @@ class Command(BaseCommand):
             print(user.user.first_name)
             print(len(active_surveys))
             print(f"Next Survey At: {user.next_survey_datetime}")
-            print(f"Current time: {datetime.datetime.now(datetime.timezone.utc)}")
+            print(f"Current time: {timezone.now()}")
 
             if len(active_surveys) == 0:
                 survey_obj = create_survey(user)
                 logger.debug("No active surveys found. Creating survey", extra={'user_id': user.user_id,
                                                                                 'survey_id': survey_obj.active_survey_id})
 
-                if user.next_survey_datetime <= datetime.datetime.now(datetime.timezone.utc):
+                if user.next_survey_datetime <= timezone.now():
                     survey_id = survey_obj.active_survey_id
                 else:
                     continue
 
             elif len(active_surveys) == 1:
                 if active_surveys[0].sent is False:
-                    if user.next_survey_datetime <= datetime.datetime.now(datetime.timezone.utc):
+                    if user.next_survey_datetime <= timezone.now():
                         survey_obj = active_surveys[0]
                         survey_id = survey_obj.active_survey_id
                     else:
@@ -70,11 +69,11 @@ class Command(BaseCommand):
             response = send_text.send_text(body, user.phone_number)
             if response.get('sent'):
                 survey_obj.sent = True
-                survey_obj.sent_datetime = datetime.datetime.now(datetime.timezone.utc)
+                survey_obj.sent_datetime = timezone.now()
                 survey_obj.save()
 
-                survey_obj.user.userphonenumber.last_survey_sent_datetime = datetime.datetime.now(datetime.timezone.utc)
-                survey_obj.user.userphonenumber.next_survey_datetime = dtz.make_aware(datetime.datetime.combine(
+                survey_obj.user.userphonenumber.last_survey_sent_datetime = timezone.now()
+                survey_obj.user.userphonenumber.next_survey_datetime = timezone.make_aware(datetime.datetime.combine(
                     datetime.datetime.now(datetime.timezone.utc).date() + datetime.timedelta(days=1),
                     survey_obj.user.userphonenumber.send_survey_time), timezone=pytz.timezone('UTC'))
                 survey_obj.user.userphonenumber.save()

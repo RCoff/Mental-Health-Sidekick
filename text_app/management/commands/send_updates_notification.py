@@ -1,10 +1,6 @@
 import os
-import datetime
-from urllib.parse import urljoin
 
-import pytz
-from django.core.management.base import BaseCommand, CommandError
-from django.utils import timezone as dtz
+from django.core.management.base import BaseCommand
 from dotenv import load_dotenv
 
 from text_app import models, send_text
