@@ -38,6 +38,14 @@ class UserChecklist(BaseChecklistTemplate):
             user_checklist=self
         )
 
+    @property
+    def item_count(self):
+        return self.userchecklistitem_set.filter(deleted=False).count()
+
+    @property
+    def checked_item_count(self):
+        return self.userchecklistitem_set.filter(deleted=False, status=True).count()
+
 
 class UserChecklistItem(BaseChecklistItemTemplate):
     user_checklist = models.ForeignKey(UserChecklist,
