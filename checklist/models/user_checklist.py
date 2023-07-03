@@ -13,6 +13,12 @@ class UserChecklistTemplate(BaseChecklistTemplate):
                              editable=False, null=False)
     copied_from = models.UUIDField(null=True)
 
+    def add_item(self, text: str):
+        UserChecklistItemTemplate.objects.create(
+            text=text,
+            user_checklist_template=self
+        )
+
 
 class UserChecklistItemTemplate(BaseChecklistItemTemplate):
     user_checklist_template = models.ForeignKey(UserChecklistTemplate,
@@ -25,6 +31,12 @@ class UserChecklist(BaseChecklistTemplate):
                              on_delete=models.CASCADE,
                              editable=False, null=False)
     created_from = models.UUIDField(null=True)
+
+    def add_item(self, text: str):
+        UserChecklistItem.objects.create(
+            text=text,
+            user_checklist=self
+        )
 
 
 class UserChecklistItem(BaseChecklistItemTemplate):

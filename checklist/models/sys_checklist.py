@@ -1,3 +1,5 @@
+from typing import Optional
+
 from django.db import models
 
 from .base import (
@@ -8,6 +10,12 @@ from .base import (
 
 class ChecklistTemplate(BaseChecklistTemplate):
     """ """
+
+    def add_item(self, text: str):
+        ChecklistItemTemplate.objects.create(
+            text=text,
+            checklist_template=self
+        )
 
 
 class ChecklistItemTemplate(BaseChecklistItemTemplate):
