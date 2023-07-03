@@ -29,8 +29,8 @@ class UserChecklistItemTemplate(BaseChecklistItemTemplate):
 class UserChecklist(BaseChecklistTemplate):
     user = models.ForeignKey(get_user_model(),
                              on_delete=models.CASCADE,
-                             editable=False, null=False)
-    created_from = models.UUIDField(null=True)
+                             editable=True, null=False)
+    created_from = models.UUIDField(blank=True, editable=False, null=True)
 
     def add_item(self, text: str):
         UserChecklistItem.objects.create(
@@ -42,5 +42,5 @@ class UserChecklist(BaseChecklistTemplate):
 class UserChecklistItem(BaseChecklistItemTemplate):
     user_checklist = models.ForeignKey(UserChecklist,
                                        on_delete=models.CASCADE,
-                                       editable=False, null=False)
+                                       editable=True, null=False)
     status = models.BooleanField(default=False, editable=True, null=False)
