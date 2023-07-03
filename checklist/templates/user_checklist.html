@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %}My Checklists{% endblock %}
+
+{% block content %}
+    <div class="container mt-4 d-flex flex-column justify-content-center align-items-center">
+        <div class="command-row col-12 d-flex">
+            <a class="btn btn-primary col-1 me-4" href="{% url 'user-checklists' %}">Back</a>
+            <div class="col-10">
+                <h2 class="col-10">{{ checklist_name }}</h2>
+            </div>
+            <button type="button" class="btn btn-secondary me-auto col-1">Edit</button>
+        </div>
+        <div class="list-group w-75 mt-4 mb-4" id="checklist-items">
+            {% for item in checklist_items %}
+                <label class="list-group-item text-decoration-none">
+                    <input class="form-check-input me-1" type="checkbox" aria-label="Mark as complete"
+                           data-id="{{ item.id }}" onclick="updateItemStatus(this)"
+                           {% if item.status %}checked{% endif %}
+                    >
+                    {{ item.text }}
+                </label>
+            {% endfor %}
+            {% csrf_token %}
+        </div>
+        <button type="button" class="btn btn-primary ms-auto" onclick="addItem()">Add</button>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script type="application/javascript">
+        async function updateItemStatus(e) {
+            if (!e.getAttribute('data-id')) return;
+
+            const url = "item/" + e.getAttribute('data-id')
+            const csrf_token = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            const response = await fetch(url, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": csrf_token
+                },
+                body: JSON.stringify({
+                    status: e.checked
+                })
+            })
+
+            const result = await response.json()
+        }
+
+        function addItem() {
+            const element = document.getElementById('checklist-items')
+            const new_item = document.createElement("label")
+            const new_checkbox = document.createElement("input")
+            const new_text_input = document.createElement("input")
+
+            new_item.setAttribute("class", "list-group-item text-decoration-none d-flex")
+            new_checkbox.setAttribute("class", "form-check-input me-1")
+            new_checkbox.setAttribute("type", "checkbox")
+            new_checkbox.setAttribute("aria-label", "Mark as complete")
+            new_checkbox.setAttribute("onclick", "updateItemStatus(this)")
+            new_checkbox.setAttribute("disabled", "True")
+            new_text_input.setAttribute("type", "text")
+            new_text_input.setAttribute("class", "form-control w-50")
+
+            new_item.appendChild(new_checkbox)
+            new_item.appendChild(new_text_input)
+            element.appendChild(new_item)
+
+        }
+    </script>
+{% endblock %}
