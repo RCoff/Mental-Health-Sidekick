@@ -13,7 +13,7 @@ const Layout = () => {
                     <nav>
                         <ul className={styles.headerNavList}>
                             <li className={styles.headerNavLeftMargin}>
-                                <NavLink to="#" className={styles.headerNavPageLink}>Checklists</NavLink>
+                                <NavLink to="/checklist" className={styles.headerNavPageLink}>Checklists</NavLink>
                             </li>
                         </ul>
                     </nav>
