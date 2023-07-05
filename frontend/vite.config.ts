@@ -10,6 +10,8 @@ export default defineConfig({
         sourcemap: true
     },
     server: {
-        proxy: {}
+        proxy: {
+            "/checklist-api": "http://127.0.0.1:8000"
+        }
     }
 })
