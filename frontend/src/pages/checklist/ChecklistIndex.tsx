@@ -10,7 +10,7 @@ import {
 import {ChecklistIndexItem} from "./ChecklistIndexItem"
 import {getChecklistIndex, Checklist} from "../../api";
 
-// import styles from "./ChecklistIndex.module.css"
+import styles from "./Checklist.module.css"
 
 const ChecklistIndex = () => {
     const [error, setError] = useState<unknown>()
@@ -47,7 +47,7 @@ const ChecklistIndex = () => {
             <Stack mt={"1.5rem"}>
                 {!isLoading && checklistListItems.map((checklist, index) => (
                     // <Button key={index} variant="outline">{checklist.name}</Button>
-                    <Link to={checklist.id}>
+                    <Link to={checklist.id} className={styles.checklistIndexItemLink}>
                         <ChecklistIndexItem
                             index={index}
                             id={checklist.id}

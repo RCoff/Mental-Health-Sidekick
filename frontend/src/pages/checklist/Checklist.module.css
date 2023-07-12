@@ -3,3 +3,7 @@
 /*    min-height: 45px;*/
 /*    !*max-width: 200px;*!*/
 /*}*/
+
+.checklistIndexItemLink {
+    text-decoration: None;
+}

@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react';
-import {Button, Badge, Flex, Space, Group} from "@mantine/core";
+import {Button, Badge, Flex, Space, Group, Box, Text} from "@mantine/core";
 
-import styles from "./ChecklistIndex.module.css"
+import styles from "./Checklist.module.css"
 
 interface Props {
     text: string;
@@ -18,54 +18,53 @@ export const ChecklistIndexItem = ({text, id, index, total_items, completed_item
     }
 
     return (
-        <Button
+        <Box
             display="flex"
             id={id}
             key={index}
-            variant="outline"
-            color="gray"
-            radius="sm"
+            sx={(theme) => ({
+                border: "0.0625rem solid",
+                borderColor: theme.colors.dark[0],
+                borderRadius: theme.radius.sm,
+                justifyContent: "space-between",
+                '&:hover': {
+                    backgroundColor: theme.colors.gray[1]
+                }
+            })}
             pl={18}
             pr={18}
             mih={55}
             miw={450}
             onClick={handleOnClick}
-            styles={(theme) => ({
-                root: {
-                    display: "flex",
-                    backgroundColor: "rgb(0, 0, 0, 0)",
-                    borderColor: "rgba(0, 0, 0, 0.250)"
-                },
-                label: {
-                    color: "rgb(33, 37, 41)",
-                    fontWeight: 500,
-                    fontSize: "1.25rem"
-                }
-            })}
         >
-            <Group position={"apart"}>
-                <Flex
-                    pt={8}
-                    pb={8}
+            <Text
+                fz="xl"
+                fw={600}
+                color={"black"}
+                style={{display: "flex", alignItems: "center"}}
+            >
+                {text}
+            </Text>
+            <Group
+                position="right"
+                align="flex-start"
+                spacing="xs"
+                style={{marginTop: "0.5rem"}}
+            >
+                <Badge
+                    variant="filled"
+                    title="Total items"
                 >
-                    {text}
-                </Flex>
-                <Group
-                    position={"right"}
-                    align="flex-start"
-                    // gap="xs"
-                    // direction="row"
-                    // style={{width: "100%"}}
+                    {total_items}
+                </Badge>
+                <Badge
+                    variant="filled"
+                    color="green"
+                    title="Completed items"
                 >
-                    <Badge>
-                        {total_items}
-                    </Badge>
-                    <Badge
-                        color="green">
-                        {completed_items}
-                    </Badge>
-                </Group>
+                    {completed_items}
+                </Badge>
             </Group>
-        </Button>
+        </Box>
     );
 };
