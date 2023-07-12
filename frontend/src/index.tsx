@@ -6,7 +6,8 @@ import './index.css'
 
 import Layout from "./pages/layout/Layout";
 import Home from "./pages/home/Home"
-import ChecklistList from "./pages/checklistList/ChecklistList";
+import ChecklistIndex from "./pages/checklist/ChecklistIndex.tsx";
+import Checklist from "./pages/checklist/Checklist"
 import {MantineProvider} from "@mantine/core";
 
 export default function App() {
@@ -15,7 +16,8 @@ export default function App() {
             <Routes>
                 <Route path="/" element={<Layout/>}>
                     <Route index element={<Home/>}/>
-                    <Route path="/checklist" element={<ChecklistList/>}/>
+                    <Route path="checklist" element={<ChecklistIndex/>}/>
+                    <Route path="checklist/:id" element={<Checklist/>}/>
                 </Route>
             </Routes>
         </BrowserRouter>

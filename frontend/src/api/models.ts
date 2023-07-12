@@ -1,6 +1,8 @@
 export type Checklist = {
     id: string;
     name: string;
+    item_count: number;
+    checked_item_count: number;
     description?: string;
     created_datetime?: string;
     modified_datetime?: string;

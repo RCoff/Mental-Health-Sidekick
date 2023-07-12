@@ -2,6 +2,7 @@ from typing import Optional
 from uuid import uuid4
 import json
 
+from django.db.models import Q, Count
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.views import View
@@ -43,6 +44,9 @@ class Checklist(View):
             .order_by('-modified_datetime')
 
         if not checklist_id:
+            user_checklists = user_checklists \
+                .annotate(item_count=Count('userchecklistitem')) \
+                .annotate(checked_item_count=Count('userchecklistitem', filter=Q(userchecklistitem__status=True)))
             return JsonResponse({"checklists": list(user_checklists.values())}, status=200)
         else:
             checklist_name = user_checklists.values("name").get(id=checklist_id)["name"]

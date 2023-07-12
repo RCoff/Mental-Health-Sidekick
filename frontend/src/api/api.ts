@@ -1,6 +1,6 @@
 import {ChecklistResponse, ChecklistItemResponse} from "./models.ts";
 
-export async function getChecklists(): Promise<ChecklistResponse> {
+export async function getChecklistIndex(): Promise<ChecklistResponse> {
     const response = await fetch("/checklist-api", {
         method: "GET",
         headers: {
@@ -16,7 +16,7 @@ export async function getChecklists(): Promise<ChecklistResponse> {
     return parsedResponse;
 }
 
-export async function getChecklistItems(checklist_id: string): Promise<ChecklistItemResponse> {
+export async function getChecklist(checklist_id: string): Promise<ChecklistItemResponse> {
     const response = await fetch("/checklist-api/" + checklist_id, {
         method: "GET",
         headers: {
