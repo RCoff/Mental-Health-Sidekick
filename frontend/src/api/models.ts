@@ -1,4 +1,4 @@
-export type Checklist = {
+export type ChecklistIndexItem = {
     id: string;
     name: string;
     item_count: number;
@@ -8,18 +8,34 @@ export type Checklist = {
     modified_datetime?: string;
 }
 
+export type ChecklistIndexResponse = {
+    checklists: ChecklistIndexItem[];
+}
+
 export type ChecklistItem = {
     id: string;
-    text: string;
+    text?: string;
+    status: boolean;
     created_datetime?: string;
     modified_datetime?: string;
 }
 
 export type ChecklistResponse = {
-    checklists: Checklist[];
+    checklist_items: ChecklistItem[];
+    checklist_name: string;
 }
 
 export type ChecklistItemResponse = {
-    checklist_items: ChecklistItem[];
-    checklist_name: string;
+    message: string;
+    error?: string;
+    checklistItem: ChecklistItem;
+}
+
+export type GenericResponse = {
+    message?: string;
+    error?: string;
+}
+
+export type UpdateChecklistItemRequest = {
+    status: boolean;
 }

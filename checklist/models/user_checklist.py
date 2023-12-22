@@ -33,7 +33,7 @@ class UserChecklist(BaseChecklistTemplate):
     created_from = models.UUIDField(blank=True, editable=False, null=True)
 
     def add_item(self, text: str):
-        UserChecklistItem.objects.create(
+        return UserChecklistItem.objects.create(
             text=text,
             user_checklist=self
         )

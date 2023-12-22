@@ -7,15 +7,18 @@ import {
     Container
 } from '@mantine/core';
 
-import {ChecklistIndexItem} from "./ChecklistIndexItem"
-import {getChecklistIndex, Checklist} from "../../api";
+import {ChecklistIndexItem as IndexItem} from "./ChecklistIndexItem"
+import {
+    getChecklistIndex,
+    ChecklistIndexItem
+} from "../../api";
 
 import styles from "./Checklist.module.css"
 
 const ChecklistIndex = () => {
     const [error, setError] = useState<unknown>()
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [checklistListItems, setChecklistListItems] = useState<Checklist[]>([]);
+    const [checklistListItems, setChecklistListItems] = useState<ChecklistIndexItem[]>([]);
 
     const doGetChecklists = async () => {
         error && setError(undefined);
@@ -48,7 +51,7 @@ const ChecklistIndex = () => {
                 {!isLoading && checklistListItems.map((checklist, index) => (
                     // <Button key={index} variant="outline">{checklist.name}</Button>
                     <Link to={checklist.id} className={styles.checklistIndexItemLink}>
-                        <ChecklistIndexItem
+                        <IndexItem
                             index={index}
                             id={checklist.id}
                             text={checklist.name}

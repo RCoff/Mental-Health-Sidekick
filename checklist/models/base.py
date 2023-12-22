@@ -21,7 +21,7 @@ class BaseChecklistTemplate(BaseModel):
 
 
 class BaseChecklistItemTemplate(BaseModel):
-    text = models.CharField(max_length=256, blank=False, editable=True, null=False)
+    text = models.CharField(max_length=256, blank=True, editable=True, null=False)
 
     class Meta:
         abstract = True

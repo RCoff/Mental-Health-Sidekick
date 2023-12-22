@@ -11,7 +11,8 @@ export default defineConfig({
     },
     server: {
         proxy: {
-            "/checklist-api": "http://127.0.0.1:8000"
+            "/checklist-api": "http://127.0.0.1:8000",
+            "/checklist/api/.*": "http://127.0.0.1:8000",
         }
     }
 })

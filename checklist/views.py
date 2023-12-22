@@ -2,6 +2,8 @@ from typing import Optional
 from uuid import uuid4
 import json
 
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q, Count
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
@@ -91,30 +93,29 @@ class Checklist(View):
         return JsonResponse({"message": "SUCCESS"}, status=202)
 
 
+@method_decorator(csrf_exempt, name='dispatch')
 class ChecklistItem(View):
     parent_model = UserChecklist
     model = UserChecklistItem
 
     def post(self, request, checklist_id: uuid4):
-        request_json = json.loads(request.body)
-        text = request_json.get('text')
+        text = ""
+        if request.body:
+            request_json = json.loads(request.body)
+            text = request_json.get('text', text)
 
-        if not text:
-            return JsonResponse({"message": "Request must include a 'text' parameter that includes the task name"},
-                                status=400)
+        new_item = self.parent_model.objects.get(id=checklist_id,
+                                                 user=request.user).add_item(text=text)
 
-        self.parent_model.objects.get(id=checklist_id,
-                                      user=request.user).add_item(text=text)
-
-        return JsonResponse({"message": "SUCCESS"}, status=202)
+        return JsonResponse({"message": "SUCCESS",
+                             "checklistItem": {
+                                 "id": new_item.id,
+                                 "status": new_item.status}
+                             }, status=202)
 
     def put(self, request, item_id: uuid4):
         request_json = json.loads(request.body)
         text = request_json.get('text')
-
-        if not text:
-            return JsonResponse({"message": "Request must include a 'text' parameter that includes the task name"},
-                                status=400)
 
         update_item = self.model.objects.get(id=item_id,
                                              user_checklist__user=request.user)
